@@ -1,0 +1,31 @@
+version: '3'
+services:
+ postgres:
+    image: postgres
+    hostname: postgres
+    ports:
+      - "6543:5432"
+    environment:
+      POSTGRES_USER: lottery_user
+      POSTGRES_PASSWORD: luckyDucky!74
+      POSTGRES_DB: LotteryDB
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+ lotteryAnalyzer:
+    build: 
+        context: ../lotteryanalyzer/lotteryanalyzer
+        dockerfile: Dockerfile
+    image: lottery-analyzer:dev
+    container_name: "lottery-analyzer"
+    ports:
+      - "2000:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=LuckyTestTime!92
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/lottery-analyzer.pfx
+    volumes:
+      - ./lotteryAnalyzer/certificates:/https:ro
+volumes:
+  postgres-data:
