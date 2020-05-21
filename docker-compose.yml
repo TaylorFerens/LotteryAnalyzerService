@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
  lotteryAnalyzer:
     build: 
-        context: ../lotteryanalyzer/lotteryanalyzer
+        context: ../lotteryanalyzerservice/lotteryanalyzer
         dockerfile: Dockerfile
     image: lottery-analyzer:dev
     container_name: "lottery-analyzer"
