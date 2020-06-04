@@ -1,8 +1,6 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
@@ -16,8 +14,15 @@ FROM build AS publish
 RUN dotnet publish "LotteryAnalyzer.csproj" -c Release -o /app/publish
 
 FROM base AS final
+
+ARG ENVIRONMENT="Development"
+
+ENV ASPNETCORE_ENVIRONMENT=$ENVIRONMENT
+
+EXPOSE 2000
+
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "LotteryAnalyzer.dll", "--environment=Development"]
+ENTRYPOINT ["dotnet", "LotteryAnalyzer.dll"]
 
 
