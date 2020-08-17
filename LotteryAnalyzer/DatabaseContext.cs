@@ -14,6 +14,8 @@ namespace LotteryAnalyzer
         public DbSet<Lottery> Lottery { get; set; }
         public DbSet<LotteryNumber> LotteryNumbers { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<LotteryHtmlTag> LotteryHtmlTags { get; set; }
+        public DbSet<LotteryHtmlTagBroker> LotteryHtmlTagBrokers { get; set; }
 
         #endregion
         #region Constructor
@@ -25,6 +27,8 @@ namespace LotteryAnalyzer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             SetupLotterySystem(ref modelBuilder);
+            SetHtmlTagRelationship(ref modelBuilder);
+            SetTagAndLotteryRelationship(ref modelBuilder);
 
             SetupDatabaseSeedData(ref modelBuilder);
         }
@@ -46,6 +50,38 @@ namespace LotteryAnalyzer
             modelBuilder.Entity<Lottery>()
                 .HasMany(l => l.LotteryNumbers)
                 .WithOne(ln => ln.Lottery);
+
+            modelBuilder.Entity<LotteryNumber>()
+                .HasOne(ln => ln.Lottery)
+                .WithMany(l => l.LotteryNumbers)
+                .HasForeignKey(ln => ln.LotteryId);
+        }
+
+
+        private void SetHtmlTagRelationship(ref ModelBuilder modelBuilder)
+        {
+            // Set up relationship between LotteryHtmlTags and their brokers
+            modelBuilder.Entity<LotteryHtmlTagBroker>()
+                 .HasMany(ltb => ltb.LotteryTags)
+                 .WithOne(lt => lt.HtmlTagBroker)
+                 .HasForeignKey(lt => lt.LotteryHtmlTagBrokerId);
+
+            modelBuilder.Entity<LotteryHtmlTag>()
+                .HasOne(lt => lt.HtmlTagBroker)
+                .WithMany(p => p.LotteryTags);
+        }
+
+        private void SetTagAndLotteryRelationship(ref ModelBuilder modelBuilder)
+        {
+            // Set up relationship between LotteryHtmlTags and lotteries
+            modelBuilder.Entity<Lottery>()
+                 .HasOne(l => l.LotteryNumberHtmlTagBroker)
+                 .WithMany(ltb => ltb.Lotteries)
+                 .HasForeignKey(l => l.LotteryHtmlTagBrokerId);
+
+            modelBuilder.Entity<LotteryHtmlTagBroker>()
+                .HasMany(ltb => ltb.Lotteries)
+                .WithOne(l => l.LotteryNumberHtmlTagBroker);
         }
 
         private void SeedWclcLotteries(ref ModelBuilder modelBuilder)
@@ -53,26 +89,87 @@ namespace LotteryAnalyzer
             // Some starting lotteries for supported analyzer
             modelBuilder.Entity<Lottery>().HasData(new Models.Lottery
             {
-                LotteryId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e86"),
                 LotteryName = "Lotto Max",
-                LotteryDomain = Classes.Enumerations.LotteryDomain.Wclc,
+                MaxlotteryNumber = 49,
+                HasBonus = true,
+                TotalNumberDraws = 7,
+                LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84"),
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                 LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-max-extra.htm"
             });
 
             modelBuilder.Entity<Lottery>().HasData(new Models.Lottery
             {
-                LotteryId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e87"),
                 LotteryName = "Lotto 649",
-                LotteryDomain = Classes.Enumerations.LotteryDomain.Wclc,
+                MaxlotteryNumber = 49,
+                HasBonus = true,
+                TotalNumberDraws = 6,
+                LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84"),
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                 LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-649-extra.htm"
             });
 
             modelBuilder.Entity<Lottery>().HasData(new Models.Lottery
             {
-                LotteryId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e88"),
                 LotteryName = "Western 649",
-                LotteryDomain = Classes.Enumerations.LotteryDomain.Wclc,
+                MaxlotteryNumber = 49,
+                HasBonus = true,
+                TotalNumberDraws = 6,
+                LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84"),
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                 LotteryUrl = "https://www.wclc.com/winning-numbers/Western-649-extra.htm"
+            });
+
+            modelBuilder.Entity<LotteryNumber>().HasData(new Models.LotteryNumber
+            {
+                LotteryNumberId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e86"),
+                Number = "1"
+
+            });
+
+            modelBuilder.Entity<LotteryNumber>().HasData(new Models.LotteryNumber
+            {
+                LotteryNumberId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e87"),
+                Number = "1"
+
+            });
+
+            modelBuilder.Entity<LotteryNumber>().HasData(new Models.LotteryNumber
+            {
+                LotteryNumberId = Guid.NewGuid(),
+                LotteryId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e88"),
+                Number = "1"
+
+            });
+
+
+            modelBuilder.Entity<LotteryHtmlTagBroker>().HasData(new LotteryHtmlTagBroker
+            {
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83")
+            });
+
+            modelBuilder.Entity<LotteryHtmlTagBroker>().HasData(new LotteryHtmlTagBroker
+            {
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84")
+            });
+
+
+            modelBuilder.Entity<LotteryHtmlTag>().HasData(new LotteryHtmlTag { 
+                LotteryHtmlTagId = new Guid("6fa14576-2c64-4fd6-892f-eb000bc6cae9"),
+                HtmlTag = "pastWinNumber",
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83")
+            });
+
+            modelBuilder.Entity<LotteryHtmlTag>().HasData(new LotteryHtmlTag
+            {
+                LotteryHtmlTagId = new Guid("6fa14576-2c64-4fd6-892f-eb000bc6cae0"),
+                HtmlTag = "pastWinNumDate",
+                LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84")
             });
 
 

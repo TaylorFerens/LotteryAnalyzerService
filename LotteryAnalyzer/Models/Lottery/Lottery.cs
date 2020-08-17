@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,12 +14,24 @@ namespace LotteryAnalyzer.Models
         public Guid? LotteryId { get; set; }
         public string LotteryName { get; set; }
         public string LotteryUrl { get; set; }
-        public LotteryDomain LotteryDomain { get; set; }
+        public int MaxlotteryNumber { get; set; }
+        public int TotalNumberDraws { get; set; }
+        public bool HasBonus { get; set; }
         public DateTime LastDrawDate { get; set; }
 
-        // One to many relationship between lottery and lottery numbers
-        [NotMapped]
-        public List<LotteryNumber> LotteryNumbers { get; set; } = new List<LotteryNumber>();
+        // Foreign Keys
+        public Guid? LotteryDateTagBrokerId { get; set; }
+        public Guid? LotteryHtmlTagBrokerId { get; set; }
+
+
+        // Foreign Entities
+        public ICollection<LotteryNumber> LotteryNumbers { get; set; }
+
+        [ForeignKey("LotteryHtmlTagBrokerId")]
+        public LotteryHtmlTagBroker LotteryNumberHtmlTagBroker { get; set; }
+
+        [ForeignKey("LotteryDateTagId")]
+        public LotteryHtmlTagBroker DrawDateTagBroker { get; set; }
         #endregion
     }
 }

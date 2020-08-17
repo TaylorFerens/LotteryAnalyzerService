@@ -81,7 +81,7 @@ namespace LotteryAnalyzer.Services
                 {
                     query = getLotteryQuery(filter);
 
-                    retval = query.ToList<Lottery>();
+                    retval = query.ToList();
                 }
             }
             catch (Exception ex)
@@ -152,20 +152,22 @@ namespace LotteryAnalyzer.Services
 
         private IQueryable<Lottery> getLotteryQuery(LotteryFilter filter)
         {
-            IQueryable<Lottery> retval = null;
+            IQueryable<Lottery> query = null;
 
             try
             {
-                retval = _context.Lottery.Select(l => l);
+                query = _context.Lottery.Select(l => l);
+
+                query.Include(l => l.LotteryNumbers);
 
                 if (filter.LotteryId != null)
                 {
-                    retval.Where(l => l.LotteryId == filter.LotteryId);
+                    query.Where(l => l.LotteryId == filter.LotteryId);
                 }
 
                 if (filter.Domain != Classes.Enumerations.LotteryDomain.Unknown)
                 {
-                    retval.Where(l => l.LotteryDomain == filter.Domain);
+                   // query.Where(l => l.LotteryDomain == filter.Domain);
                 }
 
             }
@@ -173,7 +175,7 @@ namespace LotteryAnalyzer.Services
             {
                 Console.WriteLine(ex);
             }
-            return retval;
+            return query;
         }
 
         #endregion

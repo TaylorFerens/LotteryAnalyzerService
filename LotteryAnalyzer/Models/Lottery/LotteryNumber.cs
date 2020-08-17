@@ -16,7 +16,8 @@ namespace LotteryAnalyzer.Models
         public int TimesPicked { get; set; }
 
         // Many to one relationship with lottery
-        [NotMapped]
+
+        [ForeignKey("LotteryId")]
         public Lottery Lottery { get; set; }
         #endregion
     }

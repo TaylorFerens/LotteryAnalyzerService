@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LotteryAnalyzer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200519210612_UPDATE_LOTTERY_NUMBER")]
-    partial class UPDATE_LOTTERY_NUMBER
+    [Migration("20200816230445_ADD_HTML_TAG_SYSTEM")]
+    partial class ADD_HTML_TAG_SYSTEM
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,8 +30,14 @@ namespace LotteryAnalyzer.Migrations
                     b.Property<DateTime>("LastDrawDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("LotteryDomain")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("LotteryDateTagBrokerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("LotteryDateTagId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("LotteryHtmlTagBrokerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("LotteryName")
                         .HasColumnType("text");
@@ -41,32 +47,92 @@ namespace LotteryAnalyzer.Migrations
 
                     b.HasKey("LotteryId");
 
+                    b.HasIndex("LotteryDateTagId");
+
+                    b.HasIndex("LotteryHtmlTagBrokerId");
+
                     b.ToTable("Lottery");
 
                     b.HasData(
                         new
                         {
-                            LotteryId = new Guid("53338e29-399e-4ffd-a336-0986baff0d34"),
+                            LotteryId = new Guid("246a70d1-2103-4fc4-b259-d451ee3ce86a"),
                             LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LotteryDomain = 1,
+                            LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                             LotteryName = "Lotto Max",
                             LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-max-extra.htm"
                         },
                         new
                         {
-                            LotteryId = new Guid("4329ea67-0832-4248-9ba6-7881fb4e566c"),
+                            LotteryId = new Guid("b31b44b3-523b-436b-a006-ef8f748cfe68"),
                             LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LotteryDomain = 1,
+                            LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84"),
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                             LotteryName = "Lotto 649",
                             LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-649-extra.htm"
                         },
                         new
                         {
-                            LotteryId = new Guid("c26a608f-b486-4a14-9b1f-684bdcb06d84"),
+                            LotteryId = new Guid("8c22d69b-4b39-438a-81cb-fc1c1bc3b2c6"),
                             LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LotteryDomain = 1,
+                            LotteryDateTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84"),
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83"),
                             LotteryName = "Western 649",
                             LotteryUrl = "https://www.wclc.com/winning-numbers/Western-649-extra.htm"
+                        });
+                });
+
+            modelBuilder.Entity("LotteryAnalyzer.Models.LotteryHtmlTag", b =>
+                {
+                    b.Property<Guid?>("LotteryHtmlTagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("HtmlTag")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("LotteryHtmlTagBrokerId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LotteryHtmlTagId");
+
+                    b.HasIndex("LotteryHtmlTagBrokerId");
+
+                    b.ToTable("LotteryHtmlTags");
+
+                    b.HasData(
+                        new
+                        {
+                            LotteryHtmlTagId = new Guid("6fa14576-2c64-4fd6-892f-eb000bc6cae9"),
+                            HtmlTag = "pastWinNumber",
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83")
+                        },
+                        new
+                        {
+                            LotteryHtmlTagId = new Guid("6fa14576-2c64-4fd6-892f-eb000bc6cae0"),
+                            HtmlTag = "pastWinNumDate",
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84")
+                        });
+                });
+
+            modelBuilder.Entity("LotteryAnalyzer.Models.LotteryHtmlTagBroker", b =>
+                {
+                    b.Property<Guid?>("LotteryHtmlTagBrokerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LotteryHtmlTagBrokerId");
+
+                    b.ToTable("LotteryHtmlTagBrokers");
+
+                    b.HasData(
+                        new
+                        {
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e83")
+                        },
+                        new
+                        {
+                            LotteryHtmlTagBrokerId = new Guid("80f2cc4d-8477-49c3-9dc9-91ded3d84e84")
                         });
                 });
 
@@ -144,6 +210,24 @@ namespace LotteryAnalyzer.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("LotteryAnalyzer.Models.Lottery", b =>
+                {
+                    b.HasOne("LotteryAnalyzer.Models.LotteryHtmlTagBroker", "DrawDateTagBroker")
+                        .WithMany()
+                        .HasForeignKey("LotteryDateTagId");
+
+                    b.HasOne("LotteryAnalyzer.Models.LotteryHtmlTagBroker", "LotteryNumberHtmlTagBroker")
+                        .WithMany("Lotteries")
+                        .HasForeignKey("LotteryHtmlTagBrokerId");
+                });
+
+            modelBuilder.Entity("LotteryAnalyzer.Models.LotteryHtmlTag", b =>
+                {
+                    b.HasOne("LotteryAnalyzer.Models.LotteryHtmlTagBroker", "HtmlTagBroker")
+                        .WithMany("LotteryTags")
+                        .HasForeignKey("LotteryHtmlTagBrokerId");
                 });
 
             modelBuilder.Entity("LotteryAnalyzer.Models.LotteryNumber", b =>

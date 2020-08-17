@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LotteryAnalyzer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200518222333_UPDATE_STATISTICS")]
-    partial class UPDATE_STATISTICS
+    [Migration("20200812141719_Initial_Migration")]
+    partial class Initial_Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,32 @@ namespace LotteryAnalyzer.Migrations
                     b.HasKey("LotteryId");
 
                     b.ToTable("Lottery");
+
+                    b.HasData(
+                        new
+                        {
+                            LotteryId = new Guid("0bae9861-be75-4204-90cb-1266dc358a10"),
+                            LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LotteryDomain = 1,
+                            LotteryName = "Lotto Max",
+                            LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-max-extra.htm"
+                        },
+                        new
+                        {
+                            LotteryId = new Guid("15ca4248-c0b4-4de8-a5e2-ab8d219d2043"),
+                            LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LotteryDomain = 1,
+                            LotteryName = "Lotto 649",
+                            LotteryUrl = "https://www.wclc.com/winning-numbers/lotto-649-extra.htm"
+                        },
+                        new
+                        {
+                            LotteryId = new Guid("cbd0aca0-1f32-44da-a635-ab2e61325c83"),
+                            LastDrawDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LotteryDomain = 1,
+                            LotteryName = "Western 649",
+                            LotteryUrl = "https://www.wclc.com/winning-numbers/Western-649-extra.htm"
+                        });
                 });
 
             modelBuilder.Entity("LotteryAnalyzer.Models.LotteryNumber", b =>

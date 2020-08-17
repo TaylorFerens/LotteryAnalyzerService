@@ -36,13 +36,11 @@ namespace LotteryAnalyzer
         }
 
         #endregion
-
         #region Public Methods
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             try
             {
                 // Configure AppSettings Dependency Injection
@@ -65,15 +63,11 @@ namespace LotteryAnalyzer
 
                 // Configure Cookie Policies
                 ConfigureCookiePolicies(services);
-
-                // Configure Redis
-                //ConfigureRedis(services);
             }
             catch (Exception err)
             {
                 Console.WriteLine(err);
             }
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,7 +90,6 @@ namespace LotteryAnalyzer
         }
 
         #endregion
-
         #region Private Methods
 
         private void ConfigureAppSettings(IServiceCollection services)
@@ -146,19 +139,14 @@ namespace LotteryAnalyzer
             .AddNewtonsoftJson(
                 options =>
                 {
-
                     // Here we remove the reference loop handling so when we serialize "many-to-many" entities, we will not get a run-time error
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-
-                    // Special UTC datetime handling
-                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind;
                 }
             );
         }
 
         private void ConfigureCORs(IServiceCollection services)
         {
-            // This list of origins will need to contain the URL of the finished front end project (ex. www.furious7.com)
             string[] origins = {
                 "http://localhost:4200",
                 "http://192.168.0.18:4200"
