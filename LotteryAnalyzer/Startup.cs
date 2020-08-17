@@ -135,7 +135,8 @@ namespace LotteryAnalyzer
 
                 options.EnableEndpointRouting = false;
 
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(
                 options =>
                 {
@@ -197,7 +198,6 @@ namespace LotteryAnalyzer
 
         private void ConfigureCookiePolicies(IServiceCollection services)
         {
-            // Policy that will be applied to a general filter of this web service
             // This policy ensures that, by default, all exposed methods require authentication 
             // EXCEPT when the [AllowAnonymous] tag is explicitly coded for a web method
             var policy = new AuthorizationPolicyBuilder()

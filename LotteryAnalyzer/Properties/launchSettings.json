@@ -28,9 +28,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/values",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "http://+:80",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HTTPS_PORT": "2000"
       },
       "useSSL": false,
       "httpPort": 2000

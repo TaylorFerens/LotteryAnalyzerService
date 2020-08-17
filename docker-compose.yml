@@ -7,14 +7,14 @@ services:
       - "6543:5432"
     environment:
       POSTGRES_USER: lottery_user
-      POSTGRES_PASSWORD: luckyDucky!74
+      POSTGRES_PASSWORD: luckyDucky!743
       POSTGRES_DB: LotteryDB
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
  lotteryAnalyzer:
     build: 
-        context: ../lotteryanalyzer/lotteryanalyzer
+        context: ../lotteryanalyzerservice/lotteryanalyzer
         dockerfile: Dockerfile
     image: lottery-analyzer:dev
     container_name: "lottery-analyzer"
