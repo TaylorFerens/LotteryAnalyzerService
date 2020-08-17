@@ -131,7 +131,7 @@ namespace LotteryAnalyzer.Services
                     if (lottery.LotteryId == null)
                     {
                         lottery.LotteryId = Guid.NewGuid();
-                        lottery.LotteryNumbers = SharedMethods.InitializeLotteryNumbers(lottery.LotteryId);
+                        lottery.LotteryNumbers = SharedMethods.InitializeLotteryNumbers(lottery);
                     }
 
                     _context.Lottery.Add(lottery);
@@ -163,11 +163,6 @@ namespace LotteryAnalyzer.Services
                 if (filter.LotteryId != null)
                 {
                     query.Where(l => l.LotteryId == filter.LotteryId);
-                }
-
-                if (filter.Domain != Classes.Enumerations.LotteryDomain.Unknown)
-                {
-                   // query.Where(l => l.LotteryDomain == filter.Domain);
                 }
 
             }

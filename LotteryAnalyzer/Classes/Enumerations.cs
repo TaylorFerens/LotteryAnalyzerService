@@ -8,5 +8,13 @@
             Wclc = 1
         };
 
+        public enum DateFormat
+        {
+            MMDDYYYY = 0,
+            DDMMYYYY = 1,
+            LongDate = 2,
+            ShortDate = 3,
+            MediumDate = 4
+        }
     }
 }

@@ -119,9 +119,6 @@ namespace LotteryAnalyzer.Services
                                 currentLine = reader.ReadLine();
 
                             } while (currentLine != null && endLoop);
-
-                            response.Close();
-                            reader.Close();
                         }
                     }
                 }
@@ -129,6 +126,11 @@ namespace LotteryAnalyzer.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+            finally
+            {
+                response.Dispose();
+                reader.Dispose();
             }
         }
 
@@ -144,14 +146,13 @@ namespace LotteryAnalyzer.Services
                     if (SharedMethods.HasDate(currentLine))
                     {
                         // Now on the line with the date
-                        retval = Convert.ToDateTime(currentLine);
+                        retval = Convert.ToDateTime(SharedMethods.ParseDateFromHtml(currentLine));
                     }
                     else
                     {
                         currentLine = reader.ReadLine();
                     }
-
-                } while (retval == new DateTime(1899,1,1) || currentLine != null);
+                } while (retval.Year == 1899 || currentLine != null);
 
                 // Now on the line with the date
                 retval = Convert.ToDateTime(currentLine);
@@ -183,7 +184,6 @@ namespace LotteryAnalyzer.Services
                 // Get the winning Numbers
                 while (numbersFound < totalDrawNumbers || currentLine != null)
                 {
-                    
                     winningNumber = Regex.Match(currentLine, @"\d+").Value;
 
                     // If winning numbers were found, add it to the collection

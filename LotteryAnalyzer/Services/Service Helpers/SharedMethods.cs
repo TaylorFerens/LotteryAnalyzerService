@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using static LotteryAnalyzer.Classes.Constants;
 
 namespace LotteryAnalyzer.Services.Service_Helpers
 {
@@ -13,7 +14,7 @@ namespace LotteryAnalyzer.Services.Service_Helpers
 
         #endregion
         #region Public Methods
-        public static List<LotteryNumber> InitializeLotteryNumbers(Guid? lotteryId)
+        public static List<LotteryNumber> InitializeLotteryNumbers(Lottery lottery)
         {
             List<LotteryNumber> retval = new List<LotteryNumber>();
             int currentNumber = 1;
@@ -23,14 +24,14 @@ namespace LotteryAnalyzer.Services.Service_Helpers
                 retval = new List<LotteryNumber>();
 
                 //Create a new entry from 1 - 50 for the collection
-                while (currentNumber <= MAX_LOTTERY_NUMBER)
+                while (currentNumber <= lottery.MaxlotteryNumber)
                 {
                     retval.Add(new LotteryNumber
                     {
                         LotteryNumberId = Guid.NewGuid(),
                         Number = currentNumber.ToString(),
                         TimesPicked = 0,
-                        LotteryId = lotteryId
+                        LotteryId = lottery.LotteryId
                     }); ;
                     currentNumber++;
                 }
@@ -65,11 +66,27 @@ namespace LotteryAnalyzer.Services.Service_Helpers
             return retval;
         }
 
-        public static string extractDate(string html)
+        public static DateTime ParseDateFromHtml(string html)
         {
             // TO DO: write logic that can extract a date from a line of html. Must handle all possible date formats
+            DateTime retval = new DateTime(1899, 1, 1);
 
-            return "";
+            try
+            {
+                // First attempt to get out a medium or long formatted date
+                DateTime.TryParse(Regex.Match(MEDIUM_OR_LONG_DATE_REGEX, html).Value, out retval);
+
+                // If the year is still 1899, it didnt work, and we should try a short date format
+                if(retval.Year == 1899)
+                {
+                    DateTime.TryParse(Regex.Match(SHORT_DATE_REGEX, html).Value, out retval);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            return retval;
         }
 
         #endregion

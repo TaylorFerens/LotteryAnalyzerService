@@ -8,9 +8,8 @@ namespace LotteryAnalyzer.Models
     public class LotteryHtmlTagBroker
     {
        public  Guid? LotteryHtmlTagBrokerId { get; set; }
-
        public ICollection<LotteryHtmlTag> LotteryTags { get; set; }
-        public ICollection<Lottery> Lotteries { get; set; }
-
+       public string Domain { get; set; }
+       public ICollection<Lottery> Lotteries { get; set; }
     }
 }
